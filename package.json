@@ -9,6 +9,13 @@
     "express": "3.1.0",
     "jade": "*",
     "mysql" : "*"
-
+  },
+  "devDependencies": {
+    "nock": "~0.14.2",
+    "mocha": "1.7.x",
+    "chai": "1.4.x",
+    "jade": "~0.27.7",
+    "grunt-jslint": "~0.2.4",
+    "node-sass": "*"
   }
 }
