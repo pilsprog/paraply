@@ -5,7 +5,9 @@
 
 var express = require('express')
   , routes = require('./routes')
-  , user = require('./routes/user')
+  , arranger = require('./routes/arranger')
+  , event = require('./routes/event')
+  , location = require('./routes/location')
   , http = require('http')
   , path = require('path');
 
@@ -30,7 +32,13 @@ app.configure('development', function(){
 });
 
 app.get('/', routes.index);
-app.get('/users', user.list);
+app.get('/arranger/*', routes.index);
+app.get('/arranger', arranger.arrangerList);
+app.get('/event/*', event.eventList);
+app.get('/event', event.eventList);
+app.get('/location/*', location.locationList);
+app.get('/location', location.locationList);
+
 
 http.createServer(app).listen(app.get('port'), function(){
   console.log("Express server listening on port " + app.get('port'));
