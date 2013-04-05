@@ -56,7 +56,13 @@ module.exports = function (grunt) {
 		        'public/css/main.css': 'css/main.scss'
 		      }
 		    }
-		}
+		},
+		watch: {
+				files: [
+					'css/*.scss',
+				],
+				tasks: ['default']
+			},
 	});
 
 	// Default task.
