@@ -3,6 +3,7 @@ module.exports = function (grunt) {
 	"use strict";
 	grunt.loadNpmTasks('grunt-jslint');
 	grunt.loadNpmTasks('grunt-contrib-sass');
+	grunt.loadNpmTasks('grunt-contrib-watch');
 
 	// Project configuration.
 	grunt.initConfig({
@@ -14,6 +15,18 @@ module.exports = function (grunt) {
 				'* Copyright (c) <%= grunt.template.today("yyyy") %> <%= pkg.author.name %>;' +
 				' Licensed <%= _.pluck(pkg.licenses, "type").join(", ") %> */'
 		},
+		watch: {
+			files: [
+				'css/*.scss',
+				'grunt.js',
+				'app/*.js',
+				'app/**/*.js',
+				'app.js',
+				'routes/**.js'
+			],
+			tasks: 'default'
+
+		},
 		jslint: {
 			files: [
 				'grunt.js',
@@ -23,16 +36,6 @@ module.exports = function (grunt) {
 				'app.js',
 				'routes/**.js'
 			],
-			watch: {
-				files: [
-					'grunt.js',
-					'app/*.js',
-					'app/**/*.js',
-					'app.js',
-					'routes/**.js'
-				],
-				tasks: ['default']
-			},
 			directives: {
 				node: true,
 				todo: true
@@ -42,30 +45,19 @@ module.exports = function (grunt) {
 			}
 		},
 		uglify: {},
-		sass: {                              // Task
-		    dist: {                            // Target
-		      files: {                         // Dictionary of files
-		        'public/css/main.css': 'css/main.scss',       // 'destination': 'source'
-		      }
-		    },
-		    dev: {                             // Another target
-		      options: {                       // Target options
-		        style: 'expanded'
-		      },
-		      files: {
-		        'public/css/main.css': 'css/main.scss'
-		      }
-		    }
-		},
-		watch: {
-				files: [
-					'css/*.scss',
-				],
-				tasks: ['default']
-			},
+		sass: {
+			dev: {
+				options: {
+					style: 'expanded'
+				},
+				files: {
+					'public/css/main.css': 'css/main.scss'
+				}
+			}
+		}
 	});
 
 	// Default task.
-	grunt.registerTask('default', ['sass']);
+	grunt.registerTask('default', ['sass', 'jslint']);
 
 };
