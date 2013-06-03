@@ -1,5 +1,5 @@
 $('document').ready(function () {
-    var table = $('#events');
+    var eventList = $('#events');
 
     $('#date, #arranger, #venue')
         .wrapInner('<span title="sort this column"/>')
@@ -12,7 +12,7 @@ $('document').ready(function () {
                 console.log(thIndex);
             th.click(function(){
 
-                table.find('td').filter(function(){
+                eventList.find('.cell').filter(function(){
 
                     return $(this).index() === thIndex;
                     console.log(thIndex + " " + $(this).index());
