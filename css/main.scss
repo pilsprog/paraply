@@ -39,17 +39,20 @@ h2 {
     font-size: 1.3em;
 }
 
-#event-header {
-    text-align: left !important;
+#event-header div{
     background: #333;
     color: #fff;
 }
 
-#event div {
-    padding: 6px;
+#events div {
+    padding: 10px !important; 
 }
-row:nth-child(odd) {
-    background: #eee;
+#events .row {
+    margin:0 !important;
+    padding:0 !important;
+}
+#events .row:nth-child(odd) {
+    background: #e0e0e0;
 }
 
 #event-header span:hover {
@@ -61,7 +64,16 @@ row:nth-child(odd) {
     height: 50px;
     line-height: 50px;
 }
+    #main-header container {
+        padding: 0 25px;
+    }
     #main-header img{
         vertical-align: middle;
     }
+#addLink {
+    line-height: 50px;
+}
 
+#main-footer {
+    border-top: 1px solid #ccc;
+}
