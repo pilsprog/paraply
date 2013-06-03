@@ -38,9 +38,7 @@ app.get('/event/*', event.eventList);
 app.get('/event', event.eventList);
 app.get('/location/*', location.locationList);
 app.get('/location', location.locationList);
-app.get('/fb/:event', routes.fb);
-app.get('/fbs/:event', routes.fbs);
-
+app.get('/fb', routes.fbs);
 
 http.createServer(app).listen(app.get('port'), function(){
   console.log("Express server listening on port " + app.get('port'));
