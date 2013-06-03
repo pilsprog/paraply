@@ -1,6 +1,32 @@
 doctype 5
 html(lang='no')
 	head 
-		title lol
+		title Arrangementer i IT-Bergen
+		link(rel='stylesheet', href='css/main.css', type='text/css')
+		script(src='//ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js')
+		script(src='js/sortElements.js')
+		script(src='js/sortTable.js')
 	body
-		| index
+		header#main-header
+			.container
+				img#logo(src='img/kompiler.png')
+				a.btn.right Legg til arrangement
+		.container
+			#addLink.text-center.center.ten.columns
+				form
+					label(for='urlField') Legg til IT-arrangement: 
+					input(type='text', placeholder='URL til arrangement',id='urlField')
+			h1.text-center.uppercase Arrangementer i IT-Bergen
+
+			#events.sixteen.columns
+				header#event-header
+					.date.three.columns#date Dato
+					.title.seven.columns Tittel
+					.venue.three.columns#venue Sted
+					.arranger.three.columns#arranger Arrangør
+				each event in events
+					.row
+						.date.three.columns= event.date
+						.title.seven.columns= event.title
+						.venue.three.columns= event.venue.address
+						.arranger.three.columns= event.arranger
