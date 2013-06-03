@@ -31,16 +31,10 @@ app.configure('development', function(){
   app.use(express.errorHandler());
 });
 
-app.get('/', routes.index);
-app.get('/arranger/*', routes.index);
-app.get('/arranger', arranger.arrangerList);
-app.get('/event/*', event.eventList);
-app.get('/event', event.eventList);
-app.get('/location/*', location.locationList);
-app.get('/location', location.locationList);
+app.get('/', routes.events);
 app.get('/fb', routes.fbs);
 app.get('/meetup/:eventIds', routes.meetup);
-app.get('/events', routes.events);
+
 http.createServer(app).listen(app.get('port'), function(){
   console.log("Express server listening on port " + app.get('port'));
 });
