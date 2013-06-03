@@ -1,4 +1,5 @@
-var fb = require('../lib/fb');
+var fb = require('../lib/fb'),
+	db = require('../lib/db');
 /*
  * GET home page.
  */
@@ -18,11 +19,13 @@ exports.fb = function (req, res) {
 };
 
 exports.fbs = function (req, res) {
-	fb.getEvents([ req.params.event, '137755593087477'], function(err, data) {
-		res.writeHead(200, {'Content-Type': 'application/json'});
-		if (err) {
+	db.getEvents(function (err, events) {
+		fb.getEvents(events.fb, function(err, data) {
+			res.writeHead(200, {'Content-Type': 'application/json'});
+			if (err) {
+				res.end(JSON.stringify(data));
+			}
 			res.end(JSON.stringify(data));
-		}
-		res.end(JSON.stringify(data));
+		});
 	});
 };
