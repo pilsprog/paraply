@@ -1,5 +1,6 @@
-var fb = require('../lib/fb'),
-	db = require('../lib/db'),
+var	db = require('../lib/db'),
+	async = require('async'),
+	fb = require('../lib/fb'),
 	meetup = require('../lib/meetup');
 /*
  * GET home page.
@@ -36,5 +37,27 @@ exports.meetup = function(req, res) {
 		console.log("Write to response document");
 		res.writeHead(200, {'Content-Type': 'application/json'});
 		res.end(JSON.stringify(data));
+	});
+};
+
+exports.events = function(req, res) {
+	db.getEvents(function (err, events) {
+		async.parallel({
+			'fb': function (callback) {
+				fb.getEvents(events.fb, callback);
+			},
+			'mu': function (callback) {
+				meetup.getEvents(events.mu, callback)
+			}
+		}, function (err, data) {
+			if (err) {
+				console.log(err);
+				res.writeHead(500, {'Content-Type': 'application/json'});
+				res.end(JSON.stringify(data));
+			} else {
+				res.writeHead(200, {'Content-Type': 'application/json'});
+				res.end(JSON.stringify(data.fb.concat(data.mu)));
+			}
+		});
 	});
 };
