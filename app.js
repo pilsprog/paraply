@@ -39,6 +39,7 @@ app.get('/event', event.eventList);
 app.get('/location/*', location.locationList);
 app.get('/location', location.locationList);
 app.get('/fb/:event', routes.fb);
+app.get('/fbs/:event', routes.fbs);
 
 
 http.createServer(app).listen(app.get('port'), function(){
