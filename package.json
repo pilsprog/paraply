@@ -8,7 +8,9 @@
   "dependencies": {
     "express": "3.1.0",
     "jade": "*",
-    "mysql": "*"
+    "mysql": "*",
+    "facebook-node-sdk": "~0.2.0",
+    "async": "~0.2.9"
   },
   "devDependencies": {
     "jade": "~0.27.7",
