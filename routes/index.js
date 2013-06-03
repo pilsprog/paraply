@@ -10,6 +10,9 @@ exports.index = function(req, res){
 exports.fb = function (req, res) {
 	fb.getEvent(req.params.event, function(err, data) {
 		res.writeHead(200, {'Content-Type': 'application/json'});
+		if (err) {
+			res.end(JSON.stringify(data));
+		}
 		res.end(JSON.stringify(data));
 	});
 };
@@ -17,6 +20,9 @@ exports.fb = function (req, res) {
 exports.fbs = function (req, res) {
 	fb.getEvents([ req.params.event, '137755593087477'], function(err, data) {
 		res.writeHead(200, {'Content-Type': 'application/json'});
+		if (err) {
+			res.end(JSON.stringify(data));
+		}
 		res.end(JSON.stringify(data));
 	});
 };
