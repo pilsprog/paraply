@@ -5,9 +5,6 @@
 
 var express = require('express')
   , routes = require('./routes')
-  , arranger = require('./routes/arranger')
-  , event = require('./routes/event')
-  , location = require('./routes/location')
   , http = require('http')
   , path = require('path');
 
@@ -31,7 +28,7 @@ app.configure('development', function(){
   app.use(express.errorHandler());
 });
 
-app.get('/', routes.events);
+app.get('/', routes.index);
 app.get('/fb', routes.fbs);
 app.get('/meetup/:eventIds', routes.meetup);
 
