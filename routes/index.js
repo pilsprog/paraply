@@ -1,5 +1,6 @@
 var fb = require('../lib/fb'),
-	db = require('../lib/db');
+	db = require('../lib/db'),
+	meetup = require('../lib/meetup');
 /*
  * GET home page.
  */
@@ -27,5 +28,13 @@ exports.fbs = function (req, res) {
 			}
 			res.end(JSON.stringify(data));
 		});
+	});
+};
+
+exports.meetup = function(req, res) {
+	meetup.getEvents(req.params.eventIds, function(err, data) {
+		console.log("Write to response document");
+		res.writeHead(200, {'Content-Type': 'application/json'});
+		res.end(JSON.stringify(data));
 	});
 };
