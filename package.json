@@ -11,7 +11,8 @@
     "mysql": "*",
     "meetup-api": "*",
     "facebook-node-sdk": "~0.2.0",
-    "async": "~0.2.9"
+    "async": "~0.2.9",
+    "redis": "*"
   },
   "devDependencies": {
     "jade": "~0.27.7",
