@@ -10,13 +10,13 @@ html(lang='no')
 		header#main-header
 			.container
 				img#logo(src='img/kompiler.png')
-				a.btn.right Legg til arrangement
 		.container
-			#addLink.text-center.center.ten.columns
+			
+			h1.no-margin.no-bottom-padding.uppercase.eight.columns Arrangementer i IT-Bergen
+			#addLink.text-right.right.eight.columns.no-bottom-padding
 				form
 					label(for='urlField') Legg til IT-arrangement: 
 					input(type='text', placeholder='URL til arrangement',id='urlField')
-			h1.text-center.uppercase Arrangementer i IT-Bergen
 
 			#events.sixteen.columns
 				header#event-header
@@ -26,7 +26,12 @@ html(lang='no')
 					.arranger.three.columns#arranger Arrangør
 				each event in events
 					.row
-						.date.three.columns= event.date
-						.title.seven.columns= event.title
-						.venue.three.columns= event.venue.address
-						.arranger.three.columns= event.arranger
+						.date.three.columns.cell= event.date
+						.title.seven.columns.cell= event.title
+						.venue.three.columns.cell= event.venue.address
+						.arranger.three.columns.cell= event.arranger
+
+			footer#main-footer.sixteen.columns.text-center
+				| Drevet av Foreningen Kompiler
+				br 
+				a(href='https://github.com/pilsprog/paraply/') Paraply
