@@ -35,14 +35,14 @@ exports.fbs = function (req, res) {
 
 exports.meetup = function(req, res) {
 	console.log(req.params);
-	if(req.params['type'] == 'eventids') {
-		meetup.getEvents(req.params['values'], function(err, data) {
+	if(req.params['type'] == 'eventid') {
+		meetup.getEvents([req.params['value']], function(err, data) {
 			res.writeHead(200, {'Content-Type': 'application/json'});
 			res.end(JSON.stringify(data));
 		});
 	} else if(req.params['type'] == 'groupname') {
 		console.log("Get events from group name: " + JSON.stringify(req.params));
-		meetup.getGroupEvents(req.params['values'], function(err, data) {
+		meetup.getGroupEvents([req.params['value']], function(err, data) {
 			res.writeHead(200, {'Content-Type': 'application/json'});
 			res.end(JSON.stringify(data));
 		});
@@ -60,7 +60,6 @@ exports.events = function(req, res) {
 			}
 		}, function (err, data) {
 			if (err) {
-				console.log(err);
 				res.writeHead(500, {'Content-Type': 'application/json'});
 				res.end(JSON.stringify(data));
 			} else {
@@ -69,4 +68,40 @@ exports.events = function(req, res) {
 			}
 		});
 	});
+};
+
+exports.addEvent = function(req, res) {
+	var eventURL = req.body.event,
+		eventID = new RegExp(/events\/([0-9]+)/g),
+		response,
+		func;
+	if (eventURL.match(/meetup.com\//)) {
+		func = 'addMuEvent';
+		response = eventID.exec(eventURL)[1];
+	} else if (eventURL.match(/facebook.com\//)) {
+		func = 'addFbEvent';
+		response = eventID.exec(eventURL)[1];
+	}
+
+	if (response) {
+		db[func](response, function (err, response) {
+			res.end(JSON.stringify(
+				{
+					'uri': req.params.event,
+					'response': response,
+					'func' : func,
+					'response': response
+				}
+			));
+		});
+	} else {
+		res.writeHead(500, {'Content-Type': 'application/json'});
+		res.end(JSON.stringify(
+		{
+			'uri': req.params.event,
+			'error': 'No method of storing event'
+		}
+		));
+	}
+
 };
