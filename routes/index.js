@@ -34,11 +34,19 @@ exports.fbs = function (req, res) {
 };
 
 exports.meetup = function(req, res) {
-	meetup.getEvents(req.params.eventIds, function(err, data) {
-		console.log("Write to response document");
-		res.writeHead(200, {'Content-Type': 'application/json'});
-		res.end(JSON.stringify(data));
-	});
+	console.log(req.params);
+	if(req.params['type'] == 'eventids') {
+		meetup.getEvents(req.params['values'], function(err, data) {
+			res.writeHead(200, {'Content-Type': 'application/json'});
+			res.end(JSON.stringify(data));
+		});
+	} else if(req.params['type'] == 'groupname') {
+		console.log("Get events from group name: " + JSON.stringify(req.params));
+		meetup.getGroupEvents(req.params['values'], function(err, data) {
+			res.writeHead(200, {'Content-Type': 'application/json'});
+			res.end(JSON.stringify(data));
+		});
+	}
 };
 
 exports.events = function(req, res) {
@@ -48,7 +56,7 @@ exports.events = function(req, res) {
 				fb.getEvents(events.fb, callback);
 			},
 			'mu': function (callback) {
-				meetup.getEvents(events.mu, callback)
+				meetup.getEvents(events.mu, callback);
 			}
 		}, function (err, data) {
 			if (err) {
