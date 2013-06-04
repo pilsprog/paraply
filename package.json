@@ -2,7 +2,7 @@
   "name": "Umbrella",
   "version": "0.0.1",
   "private": true,
-  "node" : "0.8",
+  "node": "0.8",
   "scripts": {
     "start": "node app"
   },
@@ -12,7 +12,8 @@
     "mysql": "*",
     "meetup-api": "*",
     "facebook-node-sdk": "~0.2.0",
-    "async": "~0.2.9"
+    "async": "~0.2.9",
+    "redis": "~0.8.3"
   },
   "devDependencies": {
     "jade": "~0.27.7",
