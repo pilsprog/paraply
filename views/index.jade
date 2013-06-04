@@ -14,9 +14,10 @@ html(lang='no')
 			
 			h1.no-margin.no-bottom-padding.uppercase.eight.columns Arrangementer i IT-Bergen
 			#addLink.text-right.right.eight.columns.no-bottom-padding
-				form
+				form(action='events')
 					label(for='urlField') Legg til IT-arrangement: 
-					input(type='text', placeholder='URL til arrangement',id='urlField')
+					input(type='text', placeholder='URL til arrangement', id='event', name='event')
+					button submit
 
 			#events.sixteen.columns
 				header#event-header
