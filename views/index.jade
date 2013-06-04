@@ -1,6 +1,6 @@
 doctype 5
 html(lang='no')
-	head 
+	head
 		title Arrangementer i IT-Bergen
 		link(rel='stylesheet', href='css/main.css', type='text/css')
 		script(src='//ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js')
@@ -11,12 +11,13 @@ html(lang='no')
 			.container
 				img#logo(src='img/kompiler.png')
 		.container
-			
+
 			h1.no-margin.no-bottom-padding.uppercase.eight.columns Arrangementer i IT-Bergen
 			#addLink.text-right.right.eight.columns.no-bottom-padding
-				form
-					label(for='urlField') Legg til IT-arrangement: 
-					input(type='text', placeholder='URL til arrangement',id='urlField')
+				form(action='events', method='POST')
+					label(for='urlField') Legg til IT-arrangement:
+					input(type='text', placeholder='URL til arrangement', id='event', name='event')
+					button submit
 
 			#events.sixteen.columns
 				header#event-header
@@ -33,5 +34,5 @@ html(lang='no')
 
 			footer#main-footer.sixteen.columns.text-center
 				| Drevet av Foreningen Kompiler
-				br 
+				br
 				a(href='https://github.com/pilsprog/paraply/') Paraply
