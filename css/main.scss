@@ -1,9 +1,3 @@
-@import "Lattice/core.scss";
-@import "Lattice/grid.scss";
-@import "Lattice/forms.scss";
-@import "Lattice/buttons.scss";
-@import "Lattice/typography.scss";
-
 @font-face {
     font-family: 'Source Sans Pro';
     src: url('../fonts/SourceSansPro/SourceSansPro-Regular-webfont.eot');
@@ -23,4 +17,63 @@
          url('../fonts/SourceSansPro/SourceSansPro-Bold-webfont.ttf') format('truetype');
     font-weight: bold;
     font-style: normal;
+}
+
+
+html, body, h1, h2, p {
+    font-size: 14px;
+}
+
+@import "Lattice/core.scss";
+@import "Lattice/grid.scss";
+// @import "Lattice/forms.scss";
+// @import "Lattice/buttons.scss";
+@import "Lattice/typography.scss";
+
+
+h1 {
+    font-size: 1.5em;
+}
+
+h2 {
+    font-size: 1.3em;
+}
+
+#event-header div{
+    background: #333;
+    color: #fff;
+}
+
+#events div {
+    padding: 10px !important; 
+}
+#events .row {
+    margin:0 !important;
+    padding:0 !important;
+}
+#events .row:nth-child(odd) {
+    background: #e0e0e0;
+}
+
+#event-header span:hover {
+    cursor:pointer;
+}
+
+#main-header {
+    background: #C11724;
+    height: 50px;
+    line-height: 50px;
+}
+    #main-header container {
+        padding: 0 25px;
+    }
+    #main-header img{
+        vertical-align: middle;
+    }
+#addLink {
+    line-height: 50px;
+}
+
+#main-footer {
+    border-top: 1px solid #ccc;
 }

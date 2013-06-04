@@ -1,6 +1,37 @@
 doctype 5
 html(lang='no')
 	head 
-		title lol
+		title Arrangementer i IT-Bergen
+		link(rel='stylesheet', href='css/main.css', type='text/css')
+		script(src='//ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js')
+		script(src='js/sortElements.js')
+		script(src='js/sortTable.js')
 	body
-		| index
+		header#main-header
+			.container
+				img#logo(src='img/kompiler.png')
+		.container
+			
+			h1.no-margin.no-bottom-padding.uppercase.eight.columns Arrangementer i IT-Bergen
+			#addLink.text-right.right.eight.columns.no-bottom-padding
+				form
+					label(for='urlField') Legg til IT-arrangement: 
+					input(type='text', placeholder='URL til arrangement',id='urlField')
+
+			#events.sixteen.columns
+				header#event-header
+					.date.three.columns#date Dato
+					.title.seven.columns Tittel
+					.venue.three.columns#venue Sted
+					.arranger.three.columns#arranger Arrangør
+				each event in events
+					.row
+						.date.three.columns.cell= event.date
+						.title.seven.columns.cell= event.title
+						.venue.three.columns.cell= event.venue.address
+						.arranger.three.columns.cell= event.arranger
+
+			footer#main-footer.sixteen.columns.text-center
+				| Drevet av Foreningen Kompiler
+				br 
+				a(href='https://github.com/pilsprog/paraply/') Paraply
