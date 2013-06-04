@@ -32,6 +32,7 @@ app.get('/', routes.index);
 app.get('/fb', routes.fbs);
 app.get('/meetup/:eventIds', routes.meetup);
 app.get('/events', routes.events);
+app.post('/events', routes.addEvent);
 
 http.createServer(app).listen(app.get('port'), function(){
   console.log("Express server listening on port " + app.get('port'));
