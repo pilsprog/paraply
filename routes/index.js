@@ -62,3 +62,40 @@ exports.events = function(req, res) {
 		});
 	});
 };
+
+exports.addEvent = function(req, res) {
+	var eventURL = req.body.event,
+		eventID = new RegExp(/events\/([0-9]+)/g),
+		response,
+		func;
+	console.log(typeof eventURL);
+	if (eventURL.match(/meetup.com\//)) {
+		func = 'addMuEvent';
+		response = eventID.exec(eventURL)[1];
+	} else if (eventURL.match(/facebook.com\//)) {
+		func = 'addFbEvent';
+		response = eventID.exec(eventURL)[1];
+	}
+
+	if (response) {
+		db[func](response, function (err, response) {
+			res.end(JSON.stringify(
+				{
+					'uri': req.params.event,
+					'response': response,
+					'func' : func,
+					'response': response
+				}
+			));
+		});
+	} else {
+		res.writeHead(500, {'Content-Type': 'application/json'});
+		res.end(JSON.stringify(
+		{
+			'uri': req.params.event,
+			'error': 'No method of storing event'
+		}
+		));
+	}
+
+};
