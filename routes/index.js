@@ -1,7 +1,8 @@
 var	db = require('../lib/db'),
 	async = require('async'),
 	fb = require('../lib/fb'),
-	meetup = require('../lib/meetup');
+	meetup = require('../lib/meetup')
+	eventbrite = require('../lib/eventbrite');
 /*
  * GET home page.
  */
@@ -35,6 +36,14 @@ exports.fbs = function (req, res) {
 
 exports.meetup = function(req, res) {
 	meetup.getEvents(req.params.eventIds, function(err, data) {
+		console.log("Write to response document");
+		res.writeHead(200, {'Content-Type': 'application/json'});
+		res.end(JSON.stringify(data));
+	});
+};
+
+exports.eventbrite = function(req, res) {
+	eventbrite.getEvent(req.params.eventIds, function(err, data) {
 		console.log("Write to response document");
 		res.writeHead(200, {'Content-Type': 'application/json'});
 		res.end(JSON.stringify(data));
