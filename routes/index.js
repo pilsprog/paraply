@@ -46,6 +46,9 @@ exports.eventbrite = function(req, res) {
 	eventbrite.getEvent(req.params.eventIds, function(err, data) {
 		console.log("Write to response document");
 		res.writeHead(200, {'Content-Type': 'application/json'});
+		if (err) {
+				res.end(JSON.stringify(data));
+			}
 		res.end(JSON.stringify(data));
 	});
 };
@@ -58,6 +61,9 @@ exports.events = function(req, res) {
 			},
 			'mu': function (callback) {
 				meetup.getEvents(events.mu, callback)
+			},
+			'eb': function (callback) {
+				eventbrite.getEvents(events.eb, callback);
 			}
 		}, function (err, data) {
 			if (err) {
@@ -66,7 +72,7 @@ exports.events = function(req, res) {
 				res.end(JSON.stringify(data));
 			} else {
 				res.writeHead(200, {'Content-Type': 'application/json'});
-				res.end(JSON.stringify(data.fb.concat(data.mu)));
+				res.end(JSON.stringify(data.eb.concat(data.fb.concat(data.mu))));
 			}
 		});
 	});
