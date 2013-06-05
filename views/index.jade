@@ -29,7 +29,7 @@ html(lang='no', prefix='schema: http://schema.org/')
 					.row(resource='#{event.id}', typeof='schema:Event')
 						.date.three.columns.cell(property='schema:startDate')= event.date
 						.title.seven.columns.cell
-							a(property='schema:url', href='#{event.source}')
+							a(href='#{event.source}')
 								span(property='schema:name')= event.title
 						.venue.three.columns.cell(property='schema:location', typeof='schema:Place')
 							if event.venue.lon
