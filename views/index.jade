@@ -1,12 +1,12 @@
 doctype 5
-html(lang='no')
+html(lang='no', prefix='schema: http://schema.org/')
 	head
 		title Arrangementer i IT-Bergen
 		link(rel='stylesheet', href='css/main.css', type='text/css')
 		script(src='//ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js')
 		script(src='js/sortElements.js')
 		script(src='js/sortTable.js')
-	body
+	body(pre)
 		header#main-header
 			.container
 				img#logo(src='img/kompiler.png')
@@ -26,11 +26,18 @@ html(lang='no')
 					.venue.three.columns#venue Sted
 					.arranger.three.columns#arranger Arrangør
 				each event in events
-					.row
-						.date.three.columns.cell= event.date
+					.row(about='#{event.source}', typeof='schema:Event')
+						.date.three.columns.cell(property='schema:startDate')= event.date
 						.title.seven.columns.cell
-							a(href='#{event.source}')= event.title
-						.venue.three.columns.cell= event.venue.address
+							a(property='schema:url', href='#{event.source}')
+								span(property='schema:name')= event.title
+						.venue.three.columns.cell(property='schema:location', typeof='schema:Place')
+							if event.venue.lon
+								span(property='schema:geo', typeof='schema:GeoCoordinates')
+									meta(property='schema:longitude', content='#{event.venue.lon}')
+									meta(property='schema:latitude', content='#{event.venue.lat}')
+							meta(property='schema:name', content='#{event.venue.name}')
+							span(property="schema:address")= event.venue.address
 						.arranger.three.columns.cell= event.arranger
 
 			footer#main-footer.sixteen.columns.text-center
