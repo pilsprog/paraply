@@ -2,29 +2,39 @@ var	db = require('../lib/db'),
 	async = require('async'),
 	fb = require('../lib/fb'),
 	meetup = require('../lib/meetup'),
-	index;
+	updateCache,
+	index,
+	fireAndForget;
 /*
  * GET home page.
  */
 exports.index = function(req, res){
-db.getEvents(function (err, events) {
-		async.parallel({
-			'fb': function (callback) {
-				fb.getEvents(events.fb, callback);
-			},
-			'mu': function (callback) {
-				meetup.getEvents(events.mu, callback)
-			}
-		}, function (err, data) {
-			if (err) {
-				res.writeHead(500, {'Content-Type': 'application/json'});
-				res.end(JSON.stringify(err));
-			} else {
-				res.render('index', {'events': data.fb.concat(data.mu)});
-			}
-		});
+	db.getCache(function (err, cache) {
+		if (cache) {
+			res.render('index', {'events': cache});
+		} else {
+			db.getEvents(
+				function (err, events) {
+					async.parallel({
+						'fb': function (callback) {
+							fb.getEvents(events.fb, callback);
+							},
+						'mu': function (callback) {
+							meetup.getEvents(events.mu, callback)
+							}
+						}, function (err, data) {
+							if (err) {
+								res.writeHead(500, {'Content-Type': 'application/json'});
+								res.end(JSON.stringify(err));
+							} else {
+								res.render('index', {'events': data.fb.concat(data.mu)});
+								db.setCache(data.fb.concat(data.mu), fireAndForget);
+							}
+					});
+				}
+			)
+		}
 	});
-
 };
 
 exports.fb = function (req, res) {
@@ -101,7 +111,9 @@ exports.addEvent = function(req, res) {
 
 	if (eventId) {
 		db[func](eventId, function (){
-			res.redirect('/');
+			updateCache(function() {
+				res.redirect('/');
+			});
 		})
 	} else {
 		res.writeHead(500, {'Content-Type': 'application/json'});
@@ -114,3 +126,26 @@ exports.addEvent = function(req, res) {
 	}
 
 };
+
+updateCache = function (callback) {
+	db.getEvents(function (err, events) {
+		async.parallel({
+			'fb': function (callback) {
+				fb.getEvents(events.fb, callback);
+			},
+			'mu': function (callback) {
+				meetup.getEvents(events.mu, callback);
+			}
+		}, function (err, data) {
+			if (err) {
+				return callback(err);
+			} else {
+				db.setCache(data.fb.concat(data.mu));
+				callback(null, 'done');
+
+			}
+		});
+	});
+}
+
+fireAndForget = function () {};
