@@ -26,7 +26,7 @@ html(lang='no', prefix='schema: http://schema.org/')
 					.venue.three.columns#venue Sted
 					.arranger.three.columns#arranger Arrangør
 				each event in events
-					.row(about='#{event.source}', typeof='schema:Event')
+					.row(resource='#{event.id}', typeof='schema:Event')
 						.date.three.columns.cell(property='schema:startDate')= event.date
 						.title.seven.columns.cell
 							a(property='schema:url', href='#{event.source}')
@@ -41,6 +41,11 @@ html(lang='no', prefix='schema: http://schema.org/')
 						.arranger.three.columns.cell= event.arranger
 
 			footer#main-footer.sixteen.columns.text-center
-				| Drevet av Foreningen Kompiler
+				| Drevet av Foreningen <span resource='#kompiler' typeof='schema:Organization'>
+				|<link property='schema:url' href='http://kompiler.no' />
+				|<meta property='schema:legalName' href='Kompiler Bergen' />
+				|<a about='#kompiler' href='https://plus.google.com/111503571123822018357' rel='author'>
+				|<a href="http://kompiler.no"><span property='schema:name'>Kompiler</a></span></a></span>
 				br
 				a(href='https://github.com/pilsprog/paraply/') Paraply
+
