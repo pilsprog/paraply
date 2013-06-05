@@ -28,7 +28,8 @@ html(lang='no')
 				each event in events
 					.row
 						.date.three.columns.cell= event.date
-						.title.seven.columns.cell= event.title
+						.title.seven.columns.cell
+							a(href='#{event.source}')= event.title
 						.venue.three.columns.cell= event.venue.address
 						.arranger.three.columns.cell= event.arranger
 
