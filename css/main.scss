@@ -30,8 +30,33 @@ html, body, h1, h2, p {
 // @import "Lattice/buttons.scss";
 @import "Lattice/typography.scss";
 
+#main-header {
+    background: #eee;
+    border-bottom: 1px solid #ccc;
+}
+    h1 {
+        font-size: 1.5em;
+    }
+    #event {
+        height: 32px;
+        line-height: 32px;
+        border: 1px solid #ccc;
+        background: #fff;
+        padding: 0 6px;
+    }
+#main-footer {
+    background: #333;
+    position: abolute;
+    bottom: 0;
+    color: #666;
+}
+    #main-footer a {
+        color: #666;
+    }
 
-h1 {
+
+
+/*h1 {
     font-size: 1.5em;
 }
 
@@ -76,4 +101,4 @@ h2 {
 
 #main-footer {
     border-top: 1px solid #ccc;
-}
+}*/
