@@ -9,22 +9,24 @@ html(lang='no', prefix='schema: http://schema.org/')
 	body(pre)
 		header#main-header
 			.container
-				img#logo(src='img/kompiler.png')
-		.container
-
-			h1.no-margin.no-bottom-padding.uppercase.eight.columns Arrangementer i IT-Bergen
-			#addLink.text-right.right.eight.columns.no-bottom-padding
-				form(action='events', method='POST')
-					label(for='urlField') Legg til IT-arrangement:
-					input(type='text', placeholder='URL til arrangement', id='event', name='event')
-					button submit
-
+				#logo.three.columns
+					img(src='img/kompiler.png')
+				.six.columns
+					h1.no-margin.no-bottom-padding.uppercase Arrangementer i IT-Bergen
+					form#addLink(action='events', method='POST')
+						label(for='urlField') fra facebook, meetup og eventbrite
+						input#event(type='text', placeholder='Legg til IT-arrangement med URL', name='event')
+						button submit
+				nav#options.seven.columns.text-right
+					#event-sort
+						.date.three.columns#date Dato
+						.title.seven.columns Tittel
+						.venue.three.columns#venue Sted
+						.arranger.three.columns#arranger Arrangør
+		.container	
 			#events.sixteen.columns
 				header#event-header
-					.date.three.columns#date Dato
-					.title.seven.columns Tittel
-					.venue.three.columns#venue Sted
-					.arranger.three.columns#arranger Arrangør
+					
 				each event in events
 					.row(resource='#{event.id}', typeof='schema:Event')
 						.date.three.columns.cell(property='schema:startDate')= event.date
@@ -40,12 +42,15 @@ html(lang='no', prefix='schema: http://schema.org/')
 							span(property="schema:address")= event.venue.address
 						.arranger.three.columns.cell= event.arranger
 
-			footer#main-footer.sixteen.columns.text-center
-				| Drevet av Foreningen <span resource='#kompiler' typeof='schema:Organization'>
-				|<link property='schema:url' href='http://kompiler.no' />
-				|<meta property='schema:legalName' content='Kompiler Bergen' />
-				|<a about='#kompiler' href='https://plus.google.com/115677007021887247036' rel='publisher'>
-				|<a href="http://kompiler.no"><span property='schema:name'>Kompiler</a></span></a></span>
-				br
-				a(href='https://github.com/pilsprog/paraply/') Paraply
+		footer#main-footer
+			.container
+				.sixteen.columns
+					| Drevet av Foreningen <span resource='#kompiler' typeof='schema:Organization'>
+					|<link property='schema:url' href='http://kompiler.no' />
+					|<meta property='schema:legalName' content='Kompiler Bergen' />
+					|<a about='#kompiler' href='https://plus.google.com/115677007021887247036' rel='publisher'>
+					|<a href="http://kompiler.no"><span property='schema:name'>Kompiler</a></span></a></span>
+					.right
+						Hele IT-Bergen under én 
+						a(href='https://github.com/pilsprog/paraply/') Paraply
 
