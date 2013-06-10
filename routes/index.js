@@ -20,7 +20,7 @@ exports.index = function(req, res){
 							fb.getEvents(events.fb, callback);
 							},
 						'mu': function (callback) {
-							meetup.getEvents(events.mu, callback)
+							meetup.getEvents(events.mu, callback);
 							}
 						}, function (err, data) {
 							if (err) {
@@ -32,7 +32,7 @@ exports.index = function(req, res){
 							}
 					});
 				}
-			)
+			);
 		}
 	});
 };
@@ -96,25 +96,51 @@ exports.events = function(req, res) {
 	});
 };
 
-exports.addEvent = function(req, res) {
-	var eventURL = req.body.event,
-		eventReg = new RegExp(/events\/([0-9]+)/g),
-		eventId,
-		func;
+exports.addEventSource = function(req, res) {
+	var eventURL = req.body.event;
 	if (eventURL.match(/meetup.com\//)) {
-		func = 'addMuEvent';
-		eventId = eventReg.exec(eventURL)[1];
-	} else if (eventURL.match(/facebook.com\//)) {
-		func = 'addFbEvent';
-		eventId = eventReg.exec(eventURL)[1];
+		if(eventURL.match(/\/events\//)) {
+			addEvent(req, res, new RegExp(/events\/([0-9a-zA-Z]+)/g), 'addMuEvent');
+		} else {
+			addGroup(req, res, new RegExp(/\/([0-9a-zA-Z]+)/g), 'addMuGroup');
+		}
+	} else if(eventURL.match(/facebook.com\//)) {
+		addEvent(req, res, new RegExp(/events\/([0-9a-zA-Z]+)/g), 'addFbEvent');
 	}
+};
+
+var addGroup = function(req, res, groupReg, func) {
+	var eventURL = req.body.event,
+		groupId = groupReg.exec(eventURL)[1];
+
+		if (groupId) {
+			db[func](groupId, function () {
+				updateCache(function () {
+					res.redirect('/');
+				});
+			});
+		} else {
+			res.writeHead(500, {'Content-Type': 'application/json'});
+			res.end(JSON.stringify(
+			{
+				'uri': req.params.event,
+				'error': 'No method of storing event'
+			}
+			));
+		}
+
+};
+
+var addEvent = function(req, res, eventReg, func) {
+	var eventURL = req.body.event,
+		eventId = eventReg.exec(eventURL)[1];
 
 	if (eventId) {
 		db[func](eventId, function (){
 			updateCache(function() {
 				res.redirect('/');
 			});
-		})
+		});
 	} else {
 		res.writeHead(500, {'Content-Type': 'application/json'});
 		res.end(JSON.stringify(
@@ -128,6 +154,15 @@ exports.addEvent = function(req, res) {
 };
 
 updateCache = function (callback) {
+	db.getGroups(function (err, events) {
+		async.parallel({
+			'mu_g': function (callback) {
+				mu.getGroupEvents(groups.mu, callback);
+			}
+		});
+	});
+
+
 	db.getEvents(function (err, events) {
 		async.parallel({
 			'fb': function (callback) {
@@ -146,6 +181,6 @@ updateCache = function (callback) {
 			}
 		});
 	});
-}
+};
 
 fireAndForget = function () {};
