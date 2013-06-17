@@ -2,9 +2,11 @@ var	db = require('../lib/db'),
 	async = require('async'),
 	fb = require('../lib/fb'),
 	meetup = require('../lib/meetup'),
+	moment = require('moment'),
 	updateCache,
 	index,
 	fireAndForget;
+moment.lang('nb');
 /*
  * GET home page.
  */
@@ -20,15 +22,30 @@ exports.index = function(req, res){
 							fb.getEvents(events.fb, callback);
 							},
 						'mu': function (callback) {
-							meetup.getEvents(events.mu, callback);
+							meetup.getMultipleEvents(events.mu, callback);
 							}
 						}, function (err, data) {
+							console.log(data.mu);
+							var events = data.fb.concat(data.mu);
 							if (err) {
 								res.writeHead(500, {'Content-Type': 'application/json'});
 								res.end(JSON.stringify(err));
 							} else {
-								res.render('index', {'events': data.fb.concat(data.mu)});
-								db.setCache(data.fb.concat(data.mu), fireAndForget);
+								async.map(events,
+									function (event, cb) {
+										event.date = moment(event.date).fromNow();
+										cb(null, event);
+									},
+									function (err, formatedEvents) {
+										if (err) {
+											res.writeHead(500, {'Content-Type': 'application/json'});
+											res.end(JSON.stringify(err));
+										}
+										res.render('index', {'events': formatedEvents});
+										db.setCache(formatedEvents, fireAndForget);
+									}
+								);
+
 							}
 					});
 				}
