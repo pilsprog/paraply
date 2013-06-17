@@ -10,7 +10,7 @@ var	db = require('../lib/db'),
  */
 exports.index = function(req, res){
 	db.getCache(function (err, cache) {
-		if (cache) {
+		if (cache && cache.length > 0) {
 			res.render('index', {'events': cache});
 		} else {
 			db.getEvents(
@@ -102,7 +102,7 @@ exports.addEventSource = function(req, res) {
 		if(eventURL.match(/\/events\//)) {
 			addEvent(req, res, new RegExp(/events\/([0-9a-zA-Z]+)/g), 'addMuEvent');
 		} else {
-			addGroup(req, res, new RegExp(/\/([0-9a-zA-Z]+)/g), 'addMuGroup');
+			addGroup(req, res, new RegExp(/\/([0-9a-zA-Z]+)\/?$/g), 'addMuGroup');
 		}
 	} else if(eventURL.match(/facebook.com\//)) {
 		addEvent(req, res, new RegExp(/events\/([0-9a-zA-Z]+)/g), 'addFbEvent');
@@ -112,6 +112,8 @@ exports.addEventSource = function(req, res) {
 var addGroup = function(req, res, groupReg, func) {
 	var eventURL = req.body.event,
 		groupId = groupReg.exec(eventURL)[1];
+		console.log(eventURL);
+		console.log(groupId);
 
 		if (groupId) {
 			db[func](groupId, function () {
@@ -134,6 +136,7 @@ var addGroup = function(req, res, groupReg, func) {
 var addEvent = function(req, res, eventReg, func) {
 	var eventURL = req.body.event,
 		eventId = eventReg.exec(eventURL)[1];
+	console.log(eventURL + ", " + eventId);
 
 	if (eventId) {
 		db[func](eventId, function (){
@@ -154,14 +157,13 @@ var addEvent = function(req, res, eventReg, func) {
 };
 
 updateCache = function (callback) {
-	db.getGroups(function (err, events) {
+	db.getGroups(function (err, groups) {
 		async.parallel({
-			'mu_g': function (callback) {
-				mu.getGroupEvents(groups.mu, callback);
+			'mu': function (callback) {
+				meetup.getGroupsEvents(groups.mu, callback);
 			}
 		});
 	});
-
 
 	db.getEvents(function (err, events) {
 		async.parallel({
