@@ -15,44 +15,14 @@ exports.index = function(req, res){
 		if (cache && cache.length > 0) {
 			res.render('index', {'events': cache});
 		} else {
-			db.getGroups(function (err, groups) {
-				meetup.addGroupsEvents(groups.mu, function () {
-					db.getEvents(
-						function (err, events) {
-							async.parallel({
-								'fb': function (callback) {
-									fb.getEvents(events.fb, callback);
-									},
-								'mu': function (callback) {
-									meetup.getMultipleEvents(events.mu, callback);
-									}
-								}, function (err, data) {
-									var events = data.fb.concat(data.mu);
-									if (err) {
-										res.writeHead(500, {'Content-Type': 'application/json'});
-										res.end(JSON.stringify(err));
-									} else {
-										async.map(events,
-											function (event, cb) {
-												event.date = moment(event.date).fromNow();
-												cb(null, event);
-											},
-											function (err, formatedEvents) {
-												if (err) {
-													res.writeHead(500, {'Content-Type': 'application/json'});
-													res.end(JSON.stringify(err));
-												}
-												res.render('index', {'events': formatedEvents});
-												db.setCache(formatedEvents, fireAndForget);
-											}
-										);
-
-									}
-							});
-						}
-					);
-				});
-			})
+			updateCache(function (err, cache) {
+				if (err) {
+					res.writeHead(500, {'Content-Type': 'application/json'});
+					res.end(JSON.stringify(err));
+				} else {
+					res.render('index', {'events': cache});
+				}
+			});
 		}
 	});
 };
@@ -172,28 +142,43 @@ var addEvent = function(req, res, eventReg, func) {
 
 updateCache = function (callback) {
 	db.getGroups(function (err, groups) {
-		async.parallel({
-			'mu': function (callback) {
-				meetup.addGroupsEvents(groups.mu, function () {
-					db.getEvents(function (err, events) {
-						async.parallel({
-							'fb': function (callback) {
-								fb.getEvents(events.fb, callback);
+		if (err) {
+			callback(err);
+		}
+		meetup.addGroupsEvents(groups.mu, function () {
+			db.getEvents(
+				function (err, events) {
+					async.parallel({
+						'fb': function (cb) {
+							fb.getEvents(events.fb, cb);
 							},
-							'mu': function (callback) {
-								meetup.getEvents(events.mu, callback);
+						'mu': function (cb) {
+							meetup.getMultipleEvents(events.mu, cb);
 							}
 						}, function (err, data) {
+							var events = data.fb.concat(data.mu);
 							if (err) {
-								return callback(err);
+								res.writeHead(500, {'Content-Type': 'application/json'});
+								res.end(JSON.stringify(err));
 							} else {
-								db.setCache(data.fb.concat(data.mu));
-								callback(null, 'done');
+								async.map(events,
+									function (event, cb) {
+										event.date = moment(event.date).fromNow();
+										cb(null, event);
+									},
+									function (err, formatedEvents) {
+										if (err) {
+											callback(err);
+										}
+										callback(null, formatedEvents);
+										db.setCache(formatedEvents, fireAndForget);
+									}
+								);
+
 							}
-						});
 					});
-				});
-			}
+				}
+			);
 		});
 	});
 };
