@@ -12,44 +12,47 @@ moment.lang('nb');
  */
 exports.index = function(req, res){
 	db.getCache(function (err, cache) {
-		if (cache && cache.length > 0) {
+		if (false && cache && cache.length > 0) {
 			res.render('index', {'events': cache});
 		} else {
-			db.getEvents(
-				function (err, events) {
-					async.parallel({
-						'fb': function (callback) {
-							fb.getEvents(events.fb, callback);
-							},
-						'mu': function (callback) {
-							meetup.getMultipleEvents(events.mu, callback);
-							}
-						}, function (err, data) {
-							console.log(data.mu);
-							var events = data.fb.concat(data.mu);
-							if (err) {
-								res.writeHead(500, {'Content-Type': 'application/json'});
-								res.end(JSON.stringify(err));
-							} else {
-								async.map(events,
-									function (event, cb) {
-										event.date = moment(event.date).fromNow();
-										cb(null, event);
+			db.getGroups(function (err, groups) {
+				meetup.addGroupsEvents(groups.mu, function () {
+					db.getEvents(
+						function (err, events) {
+							async.parallel({
+								'fb': function (callback) {
+									fb.getEvents(events.fb, callback);
 									},
-									function (err, formatedEvents) {
-										if (err) {
-											res.writeHead(500, {'Content-Type': 'application/json'});
-											res.end(JSON.stringify(err));
-										}
-										res.render('index', {'events': formatedEvents});
-										db.setCache(formatedEvents, fireAndForget);
+								'mu': function (callback) {
+									meetup.getMultipleEvents(events.mu, callback);
 									}
-								);
+								}, function (err, data) {
+									var events = data.fb.concat(data.mu);
+									if (err) {
+										res.writeHead(500, {'Content-Type': 'application/json'});
+										res.end(JSON.stringify(err));
+									} else {
+										async.map(events,
+											function (event, cb) {
+												event.date = moment(event.date).fromNow();
+												cb(null, event);
+											},
+											function (err, formatedEvents) {
+												if (err) {
+													res.writeHead(500, {'Content-Type': 'application/json'});
+													res.end(JSON.stringify(err));
+												}
+												res.render('index', {'events': formatedEvents});
+												db.setCache(formatedEvents, fireAndForget);
+											}
+										);
 
-							}
-					});
-				}
-			);
+									}
+							});
+						}
+					);
+				});
+			})
 		}
 	});
 };
@@ -77,14 +80,12 @@ exports.fbs = function (req, res) {
 };
 
 exports.meetup = function(req, res) {
-	console.log(req.params);
 	if(req.params['type'] == 'eventid') {
 		meetup.getEvents([req.params['value']], function(err, data) {
 			res.writeHead(200, {'Content-Type': 'application/json'});
 			res.end(JSON.stringify(data));
 		});
 	} else if(req.params['type'] == 'groupname') {
-		console.log("Get events from group name: " + JSON.stringify(req.params));
 		meetup.getGroupEvents([req.params['value']], function(err, data) {
 			res.writeHead(200, {'Content-Type': 'application/json'});
 			res.end(JSON.stringify(data));
@@ -119,7 +120,7 @@ exports.addEventSource = function(req, res) {
 		if(eventURL.match(/\/events\//)) {
 			addEvent(req, res, new RegExp(/events\/([0-9a-zA-Z]+)/g), 'addMuEvent');
 		} else {
-			addGroup(req, res, new RegExp(/\/([0-9a-zA-Z]+)\/?$/g), 'addMuGroup');
+			addGroup(req, res, new RegExp(/\/([0-9a-zA-Z\-]+)\/?$/g), 'addMuGroup');
 		}
 	} else if(eventURL.match(/facebook.com\//)) {
 		addEvent(req, res, new RegExp(/events\/([0-9a-zA-Z]+)/g), 'addFbEvent');
@@ -129,9 +130,6 @@ exports.addEventSource = function(req, res) {
 var addGroup = function(req, res, groupReg, func) {
 	var eventURL = req.body.event,
 		groupId = groupReg.exec(eventURL)[1];
-		console.log(eventURL);
-		console.log(groupId);
-
 		if (groupId) {
 			db[func](groupId, function () {
 				updateCache(function () {
@@ -153,7 +151,6 @@ var addGroup = function(req, res, groupReg, func) {
 var addEvent = function(req, res, eventReg, func) {
 	var eventURL = req.body.event,
 		eventId = eventReg.exec(eventURL)[1];
-	console.log(eventURL + ", " + eventId);
 
 	if (eventId) {
 		db[func](eventId, function (){
