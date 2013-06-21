@@ -174,26 +174,25 @@ updateCache = function (callback) {
 	db.getGroups(function (err, groups) {
 		async.parallel({
 			'mu': function (callback) {
-				meetup.addGroupsEvents(groups.mu, callback);
-			}
-		});
-	});
-
-	db.getEvents(function (err, events) {
-		async.parallel({
-			'fb': function (callback) {
-				fb.getEvents(events.fb, callback);
-			},
-			'mu': function (callback) {
-				meetup.getEvents(events.mu, callback);
-			}
-		}, function (err, data) {
-			if (err) {
-				return callback(err);
-			} else {
-				db.setCache(data.fb.concat(data.mu));
-				callback(null, 'done');
-
+				meetup.addGroupsEvents(groups.mu, function () {
+					db.getEvents(function (err, events) {
+						async.parallel({
+							'fb': function (callback) {
+								fb.getEvents(events.fb, callback);
+							},
+							'mu': function (callback) {
+								meetup.getEvents(events.mu, callback);
+							}
+						}, function (err, data) {
+							if (err) {
+								return callback(err);
+							} else {
+								db.setCache(data.fb.concat(data.mu));
+								callback(null, 'done');
+							}
+						});
+					});
+				});
 			}
 		});
 	});
