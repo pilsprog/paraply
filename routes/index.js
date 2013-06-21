@@ -12,7 +12,7 @@ moment.lang('nb');
  */
 exports.index = function(req, res){
 	db.getCache(function (err, cache) {
-		if (false && cache && cache.length > 0) {
+		if (cache && cache.length > 0) {
 			res.render('index', {'events': cache});
 		} else {
 			db.getGroups(function (err, groups) {
