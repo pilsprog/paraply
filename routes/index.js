@@ -174,7 +174,7 @@ updateCache = function (callback) {
 	db.getGroups(function (err, groups) {
 		async.parallel({
 			'mu': function (callback) {
-				meetup.getGroupsEvents(groups.mu, callback);
+				meetup.addGroupsEvents(groups.mu, callback);
 			}
 		});
 	});
